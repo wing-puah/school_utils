@@ -9,9 +9,10 @@ What will you like to do? Please input the number
 
 def run_parser():
     try:
+        print('initiliase parsing ...')
         DirParser().parse()
     except Exception as e:
-        print('Issue encounter with parser: {e}')
+        print(f'Issue encounter with parser: {e}')
 
 
 def get_user_action():
