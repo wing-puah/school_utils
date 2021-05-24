@@ -2,14 +2,15 @@ from src.DirParser import DirParser
 
 instructions = """
 What will you like to do? Please input the number 
-1. Parse the pdf in the folder. 
-2. Look for corresponding text in text_to_read.csv
+1. Parse the pdf in the folder '.files_to_parse'. This step will out put a notes.csv file, which will be used to match the coresponding keywork in keyword_to_read.csv. 
+2. Look for corresponding text in keyword_to_read.csv.
+3. Convert python files into single page 
 """
 
 
 def run_parser():
     try:
-        print('initiliase parsing ...')
+        print('Initiliase parsing ...')
         DirParser().parse()
     except Exception as e:
         print(f'Issue encounter with parser: {e}')

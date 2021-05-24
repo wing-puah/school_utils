@@ -1,3 +1,5 @@
 /venv
 /files_to_parse/**
 __pycache__
+
+*.csv
