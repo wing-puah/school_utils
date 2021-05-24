@@ -2,7 +2,7 @@ from src.DirParser import DirParser
 
 instructions = """
 What will you like to do? Please input the number 
-1. Parse the pdf in the folder '.files_to_parse'. This step will out put a notes.csv file, which will be used to match the coresponding keywork in keyword_to_read.csv. 
+1. Parse the pdf in the folder '.files_to_parse'. This step will out put a 'pdf_extraction.json' file, which will be used to match the coresponding keywork in 'keyword_to_read.csv'. 
 2. Look for corresponding text in keyword_to_read.csv.
 3. Convert python files into single page 
 """

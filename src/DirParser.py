@@ -24,22 +24,10 @@ class DirParser:
 
         if os.path.isfile(self.file_to_write) and os.access(self.file_to_write, os.R_OK):
             print('File exists')
-            self.extracted_file = open(self.file_to_write, 'r+')
         else:
             print('Either file is missing or is not readable, creating file...')
             with open(self.file_to_write, 'w') as open_file:
                 open_file.write(json.dumps({}))
-
-            self.extracted_file = open(self.file_to_write, 'r+')
-            # json.dump({}, open_file)
-
-            # self.extracted_file = open(self.file_to_write, 'r+')
-
-        # file_size = os.path.getsize(self.file_to_write)
-
-        # if file_size == 0:
-        #     print('Empty file detected: writing header')
-        #     self.extracted_file.write('Filename,Page no,Content\n')
 
     def parse(self):
         dir_path = f'{thisdir}{self.file_dir}'
@@ -55,7 +43,7 @@ class DirParser:
         doc = fitz.open(filename)
         no_of_pages = doc.page_count
 
-        printed_filename = filename.replace(f'{thisdir}{self.file_dir}', '')
+        printed_filename = filename.replace(f'{thisdir}{self.file_dir}/', '')
         print(
             f'\nWorking on: {printed_filename}, there is a total of {no_of_pages} pages')
 
@@ -63,19 +51,21 @@ class DirParser:
         for page in range(no_of_pages):
             # human_readable_page_no = page + 1
             page_document = doc.load_page(page)
-            content = page_document.getText('text')
-            text_to_add.append(content)
+            content = page_document.getText('text').replace(
+                '\xa0', ' ').replace('\n', ' ')
+            # this is to escape \u\d value
+            string_encode = content.encode("ascii", "ignore")
+            string_decode = str(string_encode.decode())
+            text_to_add.append(string_decode)
 
-        file_data = json.load(self.extracted_file)
-        file_data.update({[printed_filename]: text_to_add})
-        # Sets file's current position at offset.
-        self.extracted_file.seek(0)
-        json.dump(file_data, self.extracted_file, indent=4)
+        with open(self.file_to_write, 'r') as open_file:
+            file_data = json.load(open_file)
 
-        # self.extracted_file.write(
-        #     f'{printed_filename},{human_readable_page_no},{content}\n')
+        file_data[printed_filename] = text_to_add
 
-        # this is to introduce new line after every file
-        # self.extracted_file.write('\n')
+        with open(self.file_to_write, 'w') as open_file:
+            json.dump(file_data, open_file, indent=4)
+            open_file.close()
+
         print(
             f'\t...Finish with file {printed_filename}, a total of {no_of_pages} pages are parsed')
