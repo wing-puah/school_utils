@@ -42,14 +42,14 @@ class DirParser:
         doc = fitz.open(filename)
         no_of_pages = doc.page_count
 
-        printed_filename = filename.replace(f'{thisdir}{self.file_dir}/', '')
+        printed_filename = filename.replace(f'{thisdir}{self.file_dir}', '')
         print(
             f'\nWorking on: {printed_filename}, there is a total of {no_of_pages} pages')
 
         for page in range(no_of_pages):
             human_readable_page_no = page + 1
             page_document = doc.load_page(page)
-            content = page_document.getText('words')
+            content = page_document.getText('text')
             self.extracted_file.write(
                 f'{printed_filename},{human_readable_page_no},{content}\n')
 
