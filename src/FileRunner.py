@@ -7,8 +7,9 @@ import os
 import glob
 import fitz
 import json
+import re
 
-from csv import reader
+from csv import reader, writer
 
 thisdir = os.getcwd()
 
@@ -69,3 +70,44 @@ class DirParser:
 
         print(
             f'\t...Finish with file {printed_filename}, a total of {no_of_pages} pages are parsed')
+
+
+class FileMatcher:
+    def __init__(self, file_with_keywords="keyword_to_read.csv", file_to_match_from="pdf_extraction.json"):
+        self.file_with_keywords = file_with_keywords
+        self.file_to_match_from = file_to_match_from
+
+    def match(self):
+        json_file = open(self.file_to_match_from, 'r')
+        file_data = json.load(json_file)
+
+        csv_file = open(self.file_with_keywords, "r+")
+        csv_content = reader(csv_file)
+        csv_writer = writer(csv_file)
+
+        new_text = []
+        for row in csv_content:
+            if row == '':
+                return
+            matches = self.match_single_content(row[0], file_data)
+            if matches:
+                new_text.append([row[0], *matches])
+            else:
+                new_text.append([row[0]])
+
+        csv_file.seek(0)
+        csv_writer.writerows(new_text)
+
+    def match_single_content(self, content_to_match, file_data):
+        matches = []
+        for item in file_data.items():
+            key, page_value = item
+
+            for index, single_page in enumerate(page_value):
+                has_match = re.search(
+                    content_to_match, single_page, flags=re.IGNORECASE)
+
+                if has_match:
+                    matches.append(f'{key}-page {index +1}')
+
+        return matches

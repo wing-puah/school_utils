@@ -1,4 +1,4 @@
-from src.DirParser import DirParser
+from src.FileRunner import DirParser, FileMatcher
 
 instructions = """
 What will you like to do? Please input the number 
@@ -12,8 +12,18 @@ def run_parser():
     try:
         print('Initiliase parsing ...')
         DirParser().parse()
+        print('Finish parsing')
     except Exception as e:
         print(f'Issue encounter with parser: {e}')
+
+
+def run_matcher():
+    try:
+        print('Initialise matching...')
+        FileMatcher().match()
+        print('Finish matching')
+    except Exception as e:
+        print(f'Issue encounter with matcher: {e}')
 
 
 def get_user_action():
@@ -32,6 +42,9 @@ def main():
 
         if action == 1:
             run_parser()
+
+        if action == 2:
+            run_matcher()
 
     except Exception as e:
         print(f'Error encounter: {e}, please check your input')
